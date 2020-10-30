@@ -9,9 +9,12 @@ let videoStreamCurrentUser;
 var peer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '443'
+  port: '3000'
 })
+// TODO: PORT 443 for heroku
 
+
+// TODO: uncomment
 navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
@@ -100,10 +103,10 @@ const setVideoStopButton = function () {
 
 // CHAT
 var text = $('input');
-var messages_ul = $('.messages');
+var messages_ul = $('#messages');
 
-$('html').keydown(function (e) {
-  if (e.which == 13 && text.val().length !== 0) {
+$("form").on('submit', function() {
+  if (text.val().length !== 0) {
     socket.emit('new-message', text.val());
     text.val('');
   }
@@ -112,7 +115,7 @@ $('html').keydown(function (e) {
 socket.on('create-message', function (message) {
   var message_li = $('<li></li>');
   message_li.text(`User - ${message}`);
-  message_li.addClass('message');
+  message_li.addClass('list-group-item'); // TODO: can add active class if it is message of current user
   messages_ul.append(message_li);
   scrollToBottom();
 });
