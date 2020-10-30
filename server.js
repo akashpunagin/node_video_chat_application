@@ -5,6 +5,7 @@ const socketIO = require('socket.io');
 const {ExpressPeerServer} = require('peer');
 
 // Configurations
+const PORT = process.env.PORT || 3000;
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
@@ -35,6 +36,6 @@ io.on('connection', socket => {
   });
 });
 
-server.listen(3000, () => {
+server.listen(PORT, () => {
   console.log("App running on localhost 3000");
 })
