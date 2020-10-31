@@ -24,34 +24,72 @@
   <!-- <p>Room id: <%= roomId %></p> -->
 
   <div class="container-fluid h-100">
-    <div class="row" style="height:90vh">
-      <div class="col-md-9 align-self-center" style="background-color:red;">
-        <div class="" id="video-grid"></div>
-      </div>
-      <div class="col-md-3" style="background-color:blue;">
-        <div class="col">
-          <p class="text-center pt-2" style="font-size:1.5rem;">Chat</p>
-          <ul class="list-group list-group-flush" id="messages"></ul>
+    <div class="row h-100">
+      <div class="col-md-9" style="background-color: black;">
+        <div class="row align-items-center justify-content-center" style="background-color:black;height:90%;">
+          <div class="" id="video-grid"></div>
         </div>
-        <div class="col">
-          <form onsubmit="return false">
-            <div class="form-row">
+        <div class="row justify-content-between align-items-center text-white" style="background-color:#1C1E20;height:10%;">
+          <div class="col-2 mr-auto">
+            <div class="row justify-content-center">
+              <div class="main__controls__button" id="main__mute__button" onclick="muteUnmute()">
+                <i class="fas fa-microphone"></i>
+                <span>Mute</span>
+              </div>
+              <div class="main__controls__button" id="main_video__button" onclick="playStopVideo()">
+                <i class="fas fa-video"></i>
+                <span>Stop Video</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="row justify-content-center">
+              <div class="main__controls__button">
+                <i class="fas fa-shield-alt"></i>
+                <span>Security</span>
+              </div>
+              <div class="main__controls__button">
+                <i class="fas fa-user-friends"></i>
+                <span>Participants</span>
+              </div>
+              <div class="main__controls__button">
+                <i class="fas fa-comment-alt"></i>
+                <span>Chat</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-2 ml-auto">
+            <div class="row justify-content-center">
+              <div class="main__controls__button">
+                <span class="leave_meeting">Leave Meeting</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 d-flex flex-column justify-content-between" style="background-color: #404040;">
+        <div class="row h-100">
+          <div class="col">
+            <p class="pt-2 text-center text-white" style="font-size:1.5rem;">Chat</p>
+            <ul class="list-group list-group-flush overflow-auto" id="messages"></ul>
+          </div>
+        </div>
+        <div class="row">
+          <form onsubmit="return false" style="width:99%;">
+            <div class="form-row px-4 pb-3">
               <div class="col-10">
-                <input type="text" id="chat_message__input" placeholder="Type Message...">
+                <input class="form-control" type="text" id="chat_message__input" placeholder="Type Message...">
               </div>
               <div class="col-2" style="width:30px;">
-                <button id="chat_message__send" type="submit" name="button">
+                <button class="form-control" id="chat_message__send" type="submit" name="button">
                   <i class="fas fa-paper-plane"></i>
                 </button>
               </div>
             </div>
           </form>
         </div>
-
-
       </div>
     </div>
-    <div class="row" style="height:10vh">HI</div>
   </div>
 
   <!-- <div class="main">

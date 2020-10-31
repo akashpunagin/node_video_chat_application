@@ -115,7 +115,7 @@ $("form").on('submit', function() {
 socket.on('create-message', function (message) {
   var message_li = $('<li></li>');
   message_li.text(`User - ${message}`);
-  message_li.addClass('list-group-item'); // TODO: can add active class if it is message of current user
+  message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
   messages_ul.append(message_li);
   scrollToBottom();
 });

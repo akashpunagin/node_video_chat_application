@@ -7,7 +7,7 @@ body, html {
 }
 
 #chat_message__input, #chat_message__send {
-  flex-grow: 1;
+  /* flex-grow: 1; */
   background-color: transparent;
   border: none;
   color: #F5F5F5;
@@ -19,6 +19,7 @@ body, html {
 
 #chat_message__send i {
   font-size: 20px;
+  color: white;
 }
 
 .main__controls {
@@ -29,9 +30,6 @@ body, html {
   justify-content: space-between;
 }
 
-.main__controls__block {
-  display: flex;
-}
 
 .main__controls__button {
   display: flex;
@@ -43,13 +41,24 @@ body, html {
   cursor: pointer;
 }
 
+.main__controls__button i {
+  font-size: 30px;
+}
+.main__controls__button span {
+  font-size: 18px;
+}
+
 .main__controls__button:hover {
   background-color: #343434;
   border-radius: 5px;
 }
 
-.main__controls__button i {
-  font-size: 24px;
+.main__controls__button:hover span{
+  color: white;
+}
+
+.main__controls__button:hover i{
+  color: #A9A9A9;
 }
 
 .controls__disabled {
