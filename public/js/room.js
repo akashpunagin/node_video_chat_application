@@ -99,12 +99,12 @@ $(document).ready(function () {
 });
 
 const setChatShowButton = function () {
-  chatButton.find("i").removeClass("fa-comment").addClass("controls__disabled").addClass('fa-comment-slash');
+  chatButton.find("i").removeClass("fa-comment-slash").removeClass("controls__disabled").addClass('fa-comment');
   chatButton.find("span").text("Show Chat");
 };
 
 const setChatHideButton = function () {
-  chatButton.find("i").removeClass("fa-comment-slash").removeClass("controls__disabled").addClass("fa-comment");
+  chatButton.find("i").removeClass("fa-comment-slash").addClass("controls__disabled").addClass("fa-comment-slash");
   chatButton.find("span").text("Hide Chat");
 }
 
@@ -141,7 +141,7 @@ $("form").on('submit', function() {
 
 socket.on('create-message', function (message) {
   var message_li = $('<li></li>');
-  message_li.text(`User - ${message}`);
+  message_li.text(`User: ${message}`);
   message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
   messages_ul.append(message_li);
   scrollToBottom();
