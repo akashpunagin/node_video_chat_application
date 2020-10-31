@@ -57,7 +57,10 @@ const addVideoStream = function (video, stream) {
 
 // CONTROLS
 var muteButton = $('#main__mute__button');
-var videoButton = $('#main_video__button')
+var videoButton = $('#main_video__button');
+var chatButton = $('#main__chat__button');
+var mainChatWindow = $('#main__chat__window');
+var mainVideoWindow = $('#main__video_window');
 
 const muteUnmute = function () {
   const enabled = videoStreamCurrentUser.getAudioTracks()[0].enabled;
@@ -79,6 +82,30 @@ const playStopVideo = function () {
     videoStreamCurrentUser.getVideoTracks()[0].enabled = true;
     setVideoPlayButton();
   }
+}
+
+$(document).ready(function () {
+  chatButton.on('click', function () {
+    if (mainChatWindow.is(":visible")) {
+      mainChatWindow.removeClass('d-flex').addClass('d-none');
+      mainVideoWindow.removeClass('col-md-9').addClass('col-md-12');
+      setChatShowButton();
+    } else {
+      mainChatWindow.removeClass('d-none').addClass('d-flex');
+      mainVideoWindow.removeClass('col-md-12').addClass('col-md-9');
+      setChatHideButton();
+    }
+  });
+});
+
+const setChatShowButton = function () {
+  chatButton.find("i").removeClass("fa-comment").addClass("controls__disabled").addClass('fa-comment-slash');
+  chatButton.find("span").text("Show Chat");
+};
+
+const setChatHideButton = function () {
+  chatButton.find("i").removeClass("fa-comment-slash").removeClass("controls__disabled").addClass("fa-comment");
+  chatButton.find("span").text("Hide Chat");
 }
 
 const setMuteButton = function () {
