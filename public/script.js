@@ -121,6 +121,6 @@ socket.on('create-message', function (message) {
 });
 
 const scrollToBottom = function() {
-  var d = $('.main__chat__window');
+  var d = $('.chat__window');
   d.scrollTop(d.prop("scrollHeight"));
 }
