@@ -4,43 +4,31 @@ const {v4: uuidv4} = require('uuid');
 const socketIO = require('socket.io');
 const {ExpressPeerServer} = require('peer');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 // Configurations
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.set('view engine', 'ejs');
-app.use(express.static('public'))
+app.use(express.static('public'));
 const server = http.Server(app);
 const io = socketIO(server);
 const peerServer = ExpressPeerServer(server, {debug: true});
 app.use('/peerjs', peerServer);
 
-// Middelwares
 const middlewares = [
   bodyParser.urlencoded({ extended: true }),
 ];
 app.use(middlewares);
 
 app.get('/', (req, res) => {
-  // res.redirect(`/${uuidv4()}`);
   res.render('index.ejs');
 });
 
-app.post('/create-room', (req, res) => {
-  console.log("CREATE ROOM", req.body);
-  res.redirect(`/room/${uuidv4()}/${req.body.name}`);
-
-});
-
-app.post('/join-room', (req, res) => {
-  console.log("JOIN ROOM", req.body);
-  res.redirect(`/room/${req.body.roomId}/${req.body.name}`);
-});
-
-app.get('/room/:roomId/:name', (req, res) => {
-  console.log("HERE", req.params);
+app.post('/room', (req, res) => {
   res.render('room.ejs', {
-    roomId: req.params.roomId
+    roomId: req.body.join_or_create === "create_room" ? uuidv4() : req.body.roomId,
+    username: req.body.username
   });
 });
 

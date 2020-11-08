@@ -1,13 +1,14 @@
 $(document).ready(function() {
-  $('#create__room').removeClass('d-none').hide();
-});
-
-$('#toggle_join_create').on('click', function () {
-  $('#join__room').toggle();
-  $('#create__room').toggle();
-  if ($('#join__room').is(':visible')) {
-    $('#toggle_join_create').text("Create Room");
-  } else {
-    $('#toggle_join_create').text("Join Room");
-  }
+  submitButton = $('button[type="submit"]');
+  roomIdInput = $('#roomId');
+  $('input[type="radio"]').on('click', function(e) {
+    var mode = $(this).val();
+    if (mode == "join_room") {
+      roomIdInput.show().attr('required', 'required');
+      submitButton.text("Join Room");
+    } else if (mode == "create_room") {
+      roomIdInput.hide().removeAttr('required');
+      submitButton.text("Create Room");
+    }
+  });
 });

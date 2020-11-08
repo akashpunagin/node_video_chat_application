@@ -10,7 +10,7 @@ var peer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
   port: '3000'
-})
+});
 // TODO: PORT 443 for heroku
 
 
@@ -141,7 +141,7 @@ $("form").on('submit', function() {
 
 socket.on('create-message', function (message) {
   var message_li = $('<li></li>');
-  message_li.text(`User: ${message}`);
+  message_li.text(`${USERNAME}: ${message}`);
   message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
   messages_ul.append(message_li);
   scrollToBottom();
