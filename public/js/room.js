@@ -13,6 +13,15 @@ var peer = new Peer(undefined, {
 });
 // TODO: PORT 443 for heroku
 
+var roomTooltip = $('[data-toggle="tooltip"]');
+roomTooltip.tooltip();
+roomTooltip.hover(function () {
+  if (roomTooltip.find('i').hasClass('fa-door-closed')) {
+    roomTooltip.find('i').removeClass('fa-door-closed').addClass('fa-door-open');
+  } else if (roomTooltip.find('i').hasClass('fa-door-open')) {
+    roomTooltip.find('i').removeClass('fa-door-open').addClass('fa-door-closed');
+  }
+});
 
 // TODO: uncomment
 navigator.mediaDevices.getUserMedia({
