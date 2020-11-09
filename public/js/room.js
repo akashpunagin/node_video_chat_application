@@ -14,7 +14,6 @@ var peer = new Peer(undefined, {
 // TODO: PORT 443 for heroku
 
 var roomTooltip = $('[data-toggle="tooltip"]');
-roomTooltip.tooltip();
 roomTooltip.hover(function () {
   if (roomTooltip.find('i').hasClass('fa-door-closed')) {
     roomTooltip.find('i').removeClass('fa-door-closed').addClass('fa-door-open');
@@ -23,7 +22,19 @@ roomTooltip.hover(function () {
   }
 });
 
-// TODO: uncomment
+function copyToClipboard() {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val(ROOM_ID).select();
+  document.execCommand("copy");
+  $temp.remove();
+
+  roomTooltip.tooltip('show');
+  roomTooltip.mouseleave(function(){
+    roomTooltip.tooltip('dispose');
+  });
+}
+
 navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
