@@ -28,7 +28,8 @@ app.get('/', (req, res) => {
 app.post('/room', (req, res) => {
   res.render('room.ejs', {
     roomId: req.body.join_or_create === "create_room" ? uuidv4() : req.body.roomId,
-    username: req.body.username
+    username: req.body.username,
+    peer_port: process.env.PEER_PORT
   });
 });
 

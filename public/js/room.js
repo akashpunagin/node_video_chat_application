@@ -5,11 +5,11 @@ const video = document.createElement('video');
 video.muted = true;
 let videoStreamCurrentUser;
 
-
+console.log("HERE", PEER_PORT === "");
 var peer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: process.env.PEER_PORT || '3000'
+  port: PEER_PORT === "" ? '3000' : PEER_PORT
 });
 // TODO: PORT 443 for heroku
 
