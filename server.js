@@ -38,12 +38,12 @@ io.on('connection', socket => {
     socket.join(roomId);
     socket.to(roomId).broadcast.emit('user-connected', userPeerId);
 
-    socket.on('new-message', message => {
-      io.to(roomId).emit('create-message', message);
+    socket.on('new-message', (message, username) => {
+      io.to(roomId).emit('create-message', message, username);
     });
   });
 });
 
 server.listen(PORT, () => {
-  console.log("App running on localhost 3000");
+  console.log(`App running on PORT: ${PORT}`);
 })

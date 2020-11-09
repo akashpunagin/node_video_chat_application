@@ -154,14 +154,14 @@ var messages_ul = $('#messages');
 
 $("form").on('submit', function() {
   if (text.val().length !== 0) {
-    socket.emit('new-message', text.val());
+    socket.emit('new-message', text.val(), USERNAME);
     text.val('');
   }
 });
 
-socket.on('create-message', function (message) {
+socket.on('create-message', function (message, username) {
   var message_li = $('<li></li>');
-  message_li.text(`${USERNAME}: ${message}`);
+  message_li.text(`${USERNAME === username ? 'You' : username}: ${message}`);
   message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
   messages_ul.append(message_li);
   scrollToBottom();
