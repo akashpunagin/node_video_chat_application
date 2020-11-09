@@ -9,7 +9,7 @@ let videoStreamCurrentUser;
 var peer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '3000'
+  port: process.env,PEER_PORT || '3000'
 });
 // TODO: PORT 443 for heroku
 
