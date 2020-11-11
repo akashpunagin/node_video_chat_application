@@ -11,9 +11,9 @@ var peer = new Peer(undefined, {
   host: '/',
   port: PEER_PORT === "" ? '3000' : PEER_PORT
 });
-// TODO: PORT 443 for heroku
 
 var roomTooltip = $('[data-toggle="tooltip"]');
+roomTooltip.tooltip('disable');
 roomTooltip.hover(function () {
   if (roomTooltip.find('i').hasClass('fa-door-closed')) {
     roomTooltip.find('i').removeClass('fa-door-closed').addClass('fa-door-open');
@@ -23,6 +23,7 @@ roomTooltip.hover(function () {
 });
 
 function copyToClipboard() {
+  roomTooltip.tooltip('enable');
   var $temp = $("<input>");
   $("body").append($temp);
   $temp.val(ROOM_ID).select();
@@ -42,7 +43,7 @@ navigator.mediaDevices.getUserMedia({
   videoStreamCurrentUser = stream;
   addVideoStream(video, stream);
   socket.on('user-connected', function (userPeerId) {
-    connectToNewUser(userPeerId, stream);
+    connectToNewUser(userPeerId, stream); // todo create user joined message in chat
   });
   peer.on('call', function (call) {
     call.answer(stream);
@@ -56,7 +57,11 @@ navigator.mediaDevices.getUserMedia({
 });
 
 peer.on('open', function (id) {
-  socket.emit('join-room', ROOM_ID, id);
+  socket.emit('join-room', ROOM_ID, id, USERNAME, function (err) {
+    if (err) {
+      alert(err);
+    }
+  });
 });
 
 const connectToNewUser = function (userPeerId, stream) {
@@ -161,7 +166,11 @@ $("form").on('submit', function() {
 
 socket.on('create-message', function (message, username) {
   var message_li = $('<li></li>');
-  message_li.text(`${USERNAME === username ? 'You' : username}: ${message}`);
+  if (username == undefined) {
+    message_li.text(message);
+  } else {
+    message_li.text(`${USERNAME === username ? 'You' : username}: ${message}`);
+  }
   message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
   messages_ul.append(message_li);
   scrollToBottom();

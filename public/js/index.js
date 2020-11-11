@@ -1,14 +1,18 @@
 $(document).ready(function() {
-  submitButton = $('button[type="submit"]');
-  roomIdInput = $('#roomId');
+  var submitButton = $('button[type="submit"]');
+  var roomIdInput = $('#roomId');
+  var radioButtons = $('input[type="radio"]');
+  radioButtons[0].checked = true;
   $('input[type="radio"]').on('click', function(e) {
     var mode = $(this).val();
     if (mode == "join_room") {
-      roomIdInput.show().attr('required', 'required');
-      submitButton.text("Join Room");
+      roomIdInput.prop('readonly', false).attr('value', "");
+      // roomIdInput.show().attr('required', 'required');
+      // submitButton.text("Join Room");
     } else if (mode == "create_room") {
-      roomIdInput.hide().removeAttr('required');
-      submitButton.text("Create Room");
+      roomIdInput.prop('readonly', true).attr('value', ROOM_ID);
+      // roomIdInput.hide().removeAttr('required');
+      // submitButton.text("Create Room");
     }
   });
 });
