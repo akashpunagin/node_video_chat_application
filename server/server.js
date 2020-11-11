@@ -43,34 +43,35 @@ io.on('connection', socket => {
   socket.on('join-room', (roomId, userPeerId, username, callback) => {
     if (!users.isUserNameAvailable(username)) {
       callback(`Username - ${username} is not available, please try with different username`);
-    }
-    socket.join(roomId);
-
-    users.removeUser(socket.id);
-    users.addUser(socket.id, username, roomId);
-    io.to(roomId).emit("updateUserList", users.getUserList(roomId)); // TODO
-
-    socket.to(roomId).broadcast.emit('user-connected', userPeerId);
-
-    if (users.getUserList(roomId).length > 1) {
-      socket.emit('create-message', `Members of this room welcomes you`, undefined);
     } else {
-      socket.emit('create-message', `Invite members to this room`, undefined);
-    }
-    socket.broadcast.to(roomId).emit('create-message', `${username} joined the room`, undefined);
+      socket.join(roomId);
 
-    socket.on('new-message', (message, username) => {
-      var user = users.getUser(socket.id);
-      if (user) {
-        io.to(user.roomId).emit('create-message', message, username);
+      users.removeUser(socket.id);
+      users.addUser(socket.id, username, roomId);
+      io.to(roomId).emit("update-participants-list", users.getUserList(roomId));
+
+      socket.to(roomId).broadcast.emit('user-connected', userPeerId);
+
+      if (users.getUserList(roomId).length > 1) {
+        socket.emit('create-message', `Members of this room welcomes you`, undefined);
+      } else {
+        socket.emit('create-message', `Invite members to this room`, undefined);
       }
-    });
+      socket.broadcast.to(roomId).emit('create-message', `${username} joined the room`, undefined);
+
+      socket.on('new-message', (message, username) => {
+        var user = users.getUser(socket.id);
+        if (user) {
+          io.to(user.roomId).emit('create-message', message, username);
+        }
+      });
+    }
   });
 
   socket.on('disconnect', () => {
     var user = users.removeUser(socket.id);
     if (user) {
-      // io.to(user.room).emit("updateUserList", users.getUserList(user.room));
+      io.to(user.roomId).emit("update-participants-list", users.getUserList(user.roomId));
       // TODO: remove video feed of dicsonnected user
       io.to(user.roomId).emit("create-message", `${user.name} left the room`, undefined);
     }

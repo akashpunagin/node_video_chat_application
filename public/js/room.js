@@ -5,7 +5,6 @@ const video = document.createElement('video');
 video.muted = true;
 let videoStreamCurrentUser;
 
-console.log("HERE", PEER_PORT === "");
 var peer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
@@ -61,6 +60,7 @@ peer.on('open', function (id) {
     if (err) {
       alert(err);
     }
+    window.location.href = "/";
   });
 });
 
@@ -180,3 +180,15 @@ const scrollToBottom = function() {
   var d = $('.chat__window');
   d.scrollTop(d.prop("scrollHeight"));
 }
+
+// USERS
+socket.on('update-participants-list', function (users) {
+  // TODO: display participants
+  // var ol = $("<ol></ol>");
+  users.forEach(function (user) {
+    console.log(user);
+    // ol.append($("<li></li>").text(user));
+  });
+
+  // $("#users").html(ol);
+});
