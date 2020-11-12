@@ -6,10 +6,9 @@ body, html {
 
 }
 */
-#messages li {
-  white-space: normal;
-  word-wrap: break-word;
-}
+/* #messages li {
+  white-space: normal;word-wrap: break-word;
+} */
 #messages .list-group-item {
   background-color: transparent;
 }
@@ -18,8 +17,6 @@ body, html {
   max-height: 80vh;
   /* overflow: auto; */
   overflow-y: scroll;
-  position: fixed;
-  width: 50%!important;
 }
 #chat_message__input, #chat_message__send {
   /* flex-grow: 1; */

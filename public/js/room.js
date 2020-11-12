@@ -165,14 +165,25 @@ $("form").on('submit', function() {
 });
 
 socket.on('create-message', function (message, username) {
-  var message_li = $('<li></li>');
-  if (username == undefined) {
-    message_li.text(message);
-  } else {
-    message_li.text(`${USERNAME === username ? 'You' : username}: ${message}`);
-  }
-  message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
-  messages_ul.append(message_li);
+  // var message_li = $('<li></li>');
+  // if (username == undefined) {
+  //   message_li.text(message);
+  // } else {
+  //   message_li.text(`${USERNAME === username ? 'You' : username}: ${message}`);
+  // }
+  // message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
+  // messages_ul.append(message_li);
+  // scrollToBottom();
+
+  var formattedTime = moment(message.createdAt).format("h:mm a");
+  var messageTemplate = $('#message-template') .html();
+  var html = Mustache.render(messageTemplate, {
+    from: USERNAME === username ? 'You' : username,
+    createAt: formattedTime,
+    message: message,
+    card_bg_class: USERNAME === username ? 'bg-primary' : 'bg-secondary',
+  });
+  messages_ul.append(html);
   scrollToBottom();
 });
 
