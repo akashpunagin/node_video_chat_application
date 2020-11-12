@@ -50,7 +50,7 @@ io.on('connection', socket => {
       users.addUser(socket.id, username, roomId);
       io.to(roomId).emit("update-participants-list", users.getUserList(roomId));
 
-      socket.to(roomId).broadcast.emit('user-connected', userPeerId);
+      socket.to(roomId).broadcast.emit('user-connected', userPeerId, username);
 
       if (users.getUserList(roomId).length > 1) {
         socket.emit('create-message', `Members of this room welcomes you`, undefined);
