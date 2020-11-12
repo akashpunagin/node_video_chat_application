@@ -10,7 +10,7 @@ $("form").on('submit', function() {
 
 socket.on('create-message', function (message, username) {
   var formattedTime = moment(message.createdAt).format("h:mm a");
-  var messageTemplate = $('#message-template') .html();
+  var messageTemplate = $('#message-template').html();
 
   var card_bg_class;
   if (USERNAME === username) {

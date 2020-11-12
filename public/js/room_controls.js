@@ -2,18 +2,21 @@ var muteButton = $('#main__mute__button');
 var videoButton = $('#main_video__button');
 var chatButton = $('#main__chat__button');
 var mainChatWindow = $('#main__chat__window');
-var mainVideoWindow = $('#main__video_window');
+var mainVideoWindow = $('#main__video__window');
+var mainParticipantsWindow = $('#main__participants__window');
 
 // Initial Columns
-var mainVideoWindowInitialCols = "col-md-9";
+var mainVideoWindowInitialCols = "col-md-7";
 var mainChatWindowInitialCols = "col-md-3";
+var mainParticipantsWindowInitialCols = "col-md-2";
 
 // Expanded and Shrinked Columns
-var mainChatWindowCols_Expanded = "col-md-12";
-var mainChatWindowCols_Shrinked = "col-md-9";
+var mainChatWindowCols_Expanded = "col-md-10";
+var mainChatWindowCols_Shrinked = "col-md-7";
 
 mainVideoWindow.addClass(mainVideoWindowInitialCols);
 mainChatWindow.addClass(mainChatWindowInitialCols);
+mainParticipantsWindow.addClass(mainParticipantsWindowInitialCols);
 
 const muteUnmute = function () {
   const enabled = videoStreamCurrentUser.getAudioTracks()[0].enabled;

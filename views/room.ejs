@@ -20,18 +20,30 @@
 </head>
 
 <body>
-  <!-- <p>Room id: <%= roomId %></p> -->
-
   <div class="container-fluid h-100">
     <div class="row h-100">
-      <div class="" id="main__video_window" style="background-color: black;">
+      <div id="main__participants__window" style="background-color: #404040;">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <p class="pt-2 text-center text-white" style="font-size:1.5rem;">Participants</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div id="participants"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="" id="main__video__window" style="background-color: black;">
         <div class="row align-items-center justify-content-center" style="background-color:black;height:90%;">
-          <div class="row row-cols-4" id="video-grid" style="width: 100%">
-            <!-- <div class="col"></div> -->
+          <div class="row row-cols-3" id="video-grid" style="width: 100%">
+            <!-- <div class="col"></div> --> <!-- TODO: delete this line -->
           </div>
         </div>
         <div class="row justify-content-between align-items-center text-white" style="background-color:#1C1E20;height:10%;">
-          <div class="col-2 mr-auto">
+          <div class="col-4 mr-auto">
             <div class="row justify-content-center">
               <div class="main__controls__button" id="main__mute__button" onclick="muteUnmute()">
                 <i class="fas fa-microphone"></i>
@@ -64,7 +76,7 @@
               </div>
             </div>
           </div>
-          <div class="col-2 ml-auto">
+          <div class="col-4 ml-auto">
             <div class="row justify-content-center">
               <div class="main__controls__button">
                 <span class="leave_meeting">Leave Meeting</span> <!-- TODO: implement leave meeting -->
@@ -110,16 +122,30 @@
 
   <script type="text/template" id="message-template">
     <li class="list-group-item text-white px-2 py-2">
-      <div class="card {{card_bg_class}}" style="width: inherit;">
+      <div class="card {{card_bg_class}}">
         <div class="card-header py-1">
           {{from}}
           <p class="mb-0">{{createAt}}</p>
         </div>
-        <div class="card-body py-2" style="white-space: normal; word-wrap: break-word;">
+        <div class="card-body py-2">
           <p class="card-text m-0">{{message}}</p>
         </div>
       </div>
     </li>
+  </script>
+
+  <script type="text/template" id="participants-template">
+    <ul class="list-group list-group-flush">
+      {{#users}}
+      <li class="list-group-item text-white px-2 py-2" style="background-color: #404040;">
+        <div class="card bg-secondary">
+          <div class="card-body text-white py-2">
+            <p class="card-text m-0">{{.}}</p>
+          </div>
+        </div>
+      </li>
+      {{/users}}
+    </ul>
   </script>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
