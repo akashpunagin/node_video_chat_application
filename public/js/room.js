@@ -5,16 +5,36 @@ const video = document.createElement('video');
 video.muted = true;
 let videoStreamCurrentUser;
 
-
 var peer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '3000'
-})
-// TODO: PORT 443 for heroku
+  port: PEER_PORT === "" ? '3000' : PEER_PORT
+});
 
+var roomTooltip = $('[data-toggle="tooltip"]');
+roomTooltip.tooltip('disable');
+roomTooltip.hover(function () {
+  if (roomTooltip.find('i').hasClass('fa-door-closed')) {
+    roomTooltip.find('i').removeClass('fa-door-closed').addClass('fa-door-open');
+  } else if (roomTooltip.find('i').hasClass('fa-door-open')) {
+    roomTooltip.find('i').removeClass('fa-door-open').addClass('fa-door-closed');
+  }
+});
 
-// TODO: uncomment
+function copyToClipboard() {
+  roomTooltip.tooltip('enable');
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val(ROOM_ID).select();
+  document.execCommand("copy");
+  $temp.remove();
+
+  roomTooltip.tooltip('show');
+  roomTooltip.mouseleave(function(){
+    roomTooltip.tooltip('dispose');
+  });
+}
+
 navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
@@ -22,7 +42,7 @@ navigator.mediaDevices.getUserMedia({
   videoStreamCurrentUser = stream;
   addVideoStream(video, stream);
   socket.on('user-connected', function (userPeerId) {
-    connectToNewUser(userPeerId, stream);
+    connectToNewUser(userPeerId, stream); // todo create user joined message in chat
   });
   peer.on('call', function (call) {
     call.answer(stream);
@@ -36,7 +56,12 @@ navigator.mediaDevices.getUserMedia({
 });
 
 peer.on('open', function (id) {
-  socket.emit('join-room', ROOM_ID, id);
+  socket.emit('join-room', ROOM_ID, id, USERNAME, function (err) {
+    if (err) {
+      alert(err);
+    }
+    window.location.href = "/";
+  });
 });
 
 const connectToNewUser = function (userPeerId, stream) {
@@ -99,12 +124,12 @@ $(document).ready(function () {
 });
 
 const setChatShowButton = function () {
-  chatButton.find("i").removeClass("fa-comment").addClass("controls__disabled").addClass('fa-comment-slash');
+  chatButton.find("i").removeClass("fa-comment-slash").removeClass("controls__disabled").addClass('fa-comment');
   chatButton.find("span").text("Show Chat");
 };
 
 const setChatHideButton = function () {
-  chatButton.find("i").removeClass("fa-comment-slash").removeClass("controls__disabled").addClass("fa-comment");
+  chatButton.find("i").removeClass("fa-comment-slash").addClass("controls__disabled").addClass("fa-comment-slash");
   chatButton.find("span").text("Hide Chat");
 }
 
@@ -134,14 +159,18 @@ var messages_ul = $('#messages');
 
 $("form").on('submit', function() {
   if (text.val().length !== 0) {
-    socket.emit('new-message', text.val());
+    socket.emit('new-message', text.val(), USERNAME);
     text.val('');
   }
 });
 
-socket.on('create-message', function (message) {
+socket.on('create-message', function (message, username) {
   var message_li = $('<li></li>');
-  message_li.text(`User - ${message}`);
+  if (username == undefined) {
+    message_li.text(message);
+  } else {
+    message_li.text(`${USERNAME === username ? 'You' : username}: ${message}`);
+  }
   message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
   messages_ul.append(message_li);
   scrollToBottom();
@@ -151,3 +180,15 @@ const scrollToBottom = function() {
   var d = $('.chat__window');
   d.scrollTop(d.prop("scrollHeight"));
 }
+
+// USERS
+socket.on('update-participants-list', function (users) {
+  // TODO: display participants
+  // var ol = $("<ol></ol>");
+  users.forEach(function (user) {
+    console.log(user);
+    // ol.append($("<li></li>").text(user));
+  });
+
+  // $("#users").html(ol);
+});
