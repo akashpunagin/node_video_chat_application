@@ -1,9 +1,8 @@
 const socket = io();
 
-const videoGrid = document.getElementById('video-grid')
+const videoGrid = $('#video-grid');
 const video = document.createElement('video');
 video.muted = true;
-let videoStreamCurrentUser;
 
 var peer = new Peer(undefined, {
   path: '/peerjs',
@@ -11,46 +10,30 @@ var peer = new Peer(undefined, {
   port: PEER_PORT === "" ? '3000' : PEER_PORT
 });
 
-var roomTooltip = $('[data-toggle="tooltip"]');
-roomTooltip.tooltip('disable');
-roomTooltip.hover(function () {
-  if (roomTooltip.find('i').hasClass('fa-door-closed')) {
-    roomTooltip.find('i').removeClass('fa-door-closed').addClass('fa-door-open');
-  } else if (roomTooltip.find('i').hasClass('fa-door-open')) {
-    roomTooltip.find('i').removeClass('fa-door-open').addClass('fa-door-closed');
-  }
-});
-
-function copyToClipboard() {
-  roomTooltip.tooltip('enable');
-  var $temp = $("<input>");
-  $("body").append($temp);
-  $temp.val(ROOM_ID).select();
-  document.execCommand("copy");
-  $temp.remove();
-
-  roomTooltip.tooltip('show');
-  roomTooltip.mouseleave(function(){
-    roomTooltip.tooltip('dispose');
-  });
-}
-
 navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
 }).then(function (stream) {
-  videoStreamCurrentUser = stream;
-  addVideoStream(video, stream);
-  socket.on('user-connected', function (userPeerId) {
-    connectToNewUser(userPeerId, stream); // todo create user joined message in chat
+  addVideoStream(video, stream, USERNAME);
+  socket.on('user-connected', function (userPeerId, username) {
+    connectToNewUser(userPeerId, username, stream);
+  });
+
+  var peerUsername;
+  peer.on('connection', function (conn) {
+    conn.on('data', function (username) {
+      peerUsername = username;
+    });
   });
   peer.on('call', function (call) {
+    console.log("PEER CALL", call);
     call.answer(stream);
     const video = document.createElement('video');
     call.on('stream', function (userVideoStream) {
-      addVideoStream(video, userVideoStream);
+      addVideoStream(video, userVideoStream, peerUsername);
     });
   });
+
 }).catch(function (err) {
   alert("Couldn't connect to your device's media");
 });
@@ -64,131 +47,23 @@ peer.on('open', function (id) {
   });
 });
 
-const connectToNewUser = function (userPeerId, stream) {
-  const call = peer.call(userPeerId, stream);
-  const video = document.createElement('video');
-  call.on('stream', function (userVideoStream) {
-    addVideoStream(video, userVideoStream);
+const connectToNewUser = function (userPeerId, username, stream) {
+  var conn = peer.connect(userPeerId);
+  conn.on('open', function(){
+    conn.send(USERNAME);
+    const call = peer.call(userPeerId, stream);
+    const video = document.createElement('video');
+    call.on('stream', function (userVideoStream) {
+      addVideoStream(video, userVideoStream, username);
+    });
   });
 };
 
-const addVideoStream = function (video, stream) {
+const addVideoStream = function (video, stream, username) {
   video.srcObject = stream;
   video.addEventListener('loadedmetadata', function () {
     video.play();
   });
+  video.setAttribute("id", username);
   videoGrid.append(video);
 };
-
-// CONTROLS
-var muteButton = $('#main__mute__button');
-var videoButton = $('#main_video__button');
-var chatButton = $('#main__chat__button');
-var mainChatWindow = $('#main__chat__window');
-var mainVideoWindow = $('#main__video_window');
-
-const muteUnmute = function () {
-  const enabled = videoStreamCurrentUser.getAudioTracks()[0].enabled;
-  if (enabled) {
-    videoStreamCurrentUser.getAudioTracks()[0].enabled = false;
-    setUnmuteButton();
-  } else {
-    videoStreamCurrentUser.getAudioTracks()[0].enabled = true;
-    setMuteButton();
-  }
-}
-
-const playStopVideo = function () {
-  const enabled = videoStreamCurrentUser.getVideoTracks()[0].enabled;
-  if (enabled) {
-    videoStreamCurrentUser.getVideoTracks()[0].enabled = false;
-    setVideoStopButton();
-  } else {
-    videoStreamCurrentUser.getVideoTracks()[0].enabled = true;
-    setVideoPlayButton();
-  }
-}
-
-$(document).ready(function () {
-  chatButton.on('click', function () {
-    if (mainChatWindow.is(":visible")) {
-      mainChatWindow.removeClass('d-flex').addClass('d-none');
-      mainVideoWindow.removeClass('col-md-9').addClass('col-md-12');
-      setChatShowButton();
-    } else {
-      mainChatWindow.removeClass('d-none').addClass('d-flex');
-      mainVideoWindow.removeClass('col-md-12').addClass('col-md-9');
-      setChatHideButton();
-    }
-  });
-});
-
-const setChatShowButton = function () {
-  chatButton.find("i").removeClass("fa-comment-slash").removeClass("controls__disabled").addClass('fa-comment');
-  chatButton.find("span").text("Show Chat");
-};
-
-const setChatHideButton = function () {
-  chatButton.find("i").removeClass("fa-comment-slash").addClass("controls__disabled").addClass("fa-comment-slash");
-  chatButton.find("span").text("Hide Chat");
-}
-
-const setMuteButton = function () {
-  muteButton.find("i").removeClass("fa-microphone-slash").removeClass("controls__disabled").addClass("fa-microphone");
-  muteButton.find("span").text("Mute");
-};
-
-const setUnmuteButton = function () {
-  muteButton.find("i").removeClass("fa-microphone").addClass("fa-microphone-slash").addClass("controls__disabled");
-  muteButton.find("span").text("Unmute");
-};
-
-const setVideoPlayButton = function () {
-  videoButton.find("i").removeClass("fa-video-slash").removeClass("controls__disabled").addClass("fa-video");
-  videoButton.find("span").text("Stop Video");
-};
-
-const setVideoStopButton = function () {
-  videoButton.find("i").removeClass("fa-video").addClass("fa-video-slash").addClass("controls__disabled");
-  videoButton.find("span").text("Play Video");
-};
-
-// CHAT
-var text = $('input');
-var messages_ul = $('#messages');
-
-$("form").on('submit', function() {
-  if (text.val().length !== 0) {
-    socket.emit('new-message', text.val(), USERNAME);
-    text.val('');
-  }
-});
-
-socket.on('create-message', function (message, username) {
-  var message_li = $('<li></li>');
-  if (username == undefined) {
-    message_li.text(message);
-  } else {
-    message_li.text(`${USERNAME === username ? 'You' : username}: ${message}`);
-  }
-  message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
-  messages_ul.append(message_li);
-  scrollToBottom();
-});
-
-const scrollToBottom = function() {
-  var d = $('.chat__window');
-  d.scrollTop(d.prop("scrollHeight"));
-}
-
-// USERS
-socket.on('update-participants-list', function (users) {
-  // TODO: display participants
-  // var ol = $("<ol></ol>");
-  users.forEach(function (user) {
-    console.log(user);
-    // ol.append($("<li></li>").text(user));
-  });
-
-  // $("#users").html(ol);
-});
