@@ -9,9 +9,12 @@ let videoStreamCurrentUser;
 var peer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
-  port: '443'
+  port: '3000'
 })
+// TODO: PORT 443 for heroku
 
+
+// TODO: uncomment
 navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
@@ -54,7 +57,10 @@ const addVideoStream = function (video, stream) {
 
 // CONTROLS
 var muteButton = $('#main__mute__button');
-var videoButton = $('#main_video__button')
+var videoButton = $('#main_video__button');
+var chatButton = $('#main__chat__button');
+var mainChatWindow = $('#main__chat__window');
+var mainVideoWindow = $('#main__video_window');
 
 const muteUnmute = function () {
   const enabled = videoStreamCurrentUser.getAudioTracks()[0].enabled;
@@ -76,6 +82,30 @@ const playStopVideo = function () {
     videoStreamCurrentUser.getVideoTracks()[0].enabled = true;
     setVideoPlayButton();
   }
+}
+
+$(document).ready(function () {
+  chatButton.on('click', function () {
+    if (mainChatWindow.is(":visible")) {
+      mainChatWindow.removeClass('d-flex').addClass('d-none');
+      mainVideoWindow.removeClass('col-md-9').addClass('col-md-12');
+      setChatShowButton();
+    } else {
+      mainChatWindow.removeClass('d-none').addClass('d-flex');
+      mainVideoWindow.removeClass('col-md-12').addClass('col-md-9');
+      setChatHideButton();
+    }
+  });
+});
+
+const setChatShowButton = function () {
+  chatButton.find("i").removeClass("fa-comment").addClass("controls__disabled").addClass('fa-comment-slash');
+  chatButton.find("span").text("Show Chat");
+};
+
+const setChatHideButton = function () {
+  chatButton.find("i").removeClass("fa-comment-slash").removeClass("controls__disabled").addClass("fa-comment");
+  chatButton.find("span").text("Hide Chat");
 }
 
 const setMuteButton = function () {
@@ -100,10 +130,10 @@ const setVideoStopButton = function () {
 
 // CHAT
 var text = $('input');
-var messages_ul = $('.messages');
+var messages_ul = $('#messages');
 
-$('html').keydown(function (e) {
-  if (e.which == 13 && text.val().length !== 0) {
+$("form").on('submit', function() {
+  if (text.val().length !== 0) {
     socket.emit('new-message', text.val());
     text.val('');
   }
@@ -112,12 +142,12 @@ $('html').keydown(function (e) {
 socket.on('create-message', function (message) {
   var message_li = $('<li></li>');
   message_li.text(`User - ${message}`);
-  message_li.addClass('message');
+  message_li.addClass('list-group-item').addClass('text-white'); // TODO: can add active class if it is message of current user
   messages_ul.append(message_li);
   scrollToBottom();
 });
 
 const scrollToBottom = function() {
-  var d = $('.main__chat__window');
+  var d = $('.chat__window');
   d.scrollTop(d.prop("scrollHeight"));
 }
