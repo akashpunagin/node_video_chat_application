@@ -18,35 +18,17 @@ navigator.mediaDevices.getUserMedia({
   socket.on('user-connected', function (userPeerId, username) {
     connectToNewUser(userPeerId, username, stream);
   });
-
-  // var peerUsername;
   peer.on('connection', function (conn) {
     conn.on('data', function (username) {
-      // peerUsername = username;
-
       peer.on('call', function (call) {
-        console.log("PEER CALL");
         call.answer(stream);
         const video = document.createElement('video');
         call.on('stream', function (userVideoStream) {
-          console.log("ADD VIDEO STREAM in call");
           addVideoStream(video, userVideoStream, username);
         });
       });
-
-
     });
   });
-
-
-  // peer.on('call', function (call) {
-  //   call.answer(stream);
-  //   const video = document.createElement('video');
-  //   call.on('stream', function (userVideoStream) {
-  //     addVideoStream(video, userVideoStream, peerUsername);
-  //   });
-  // });
-
 }).catch(function (err) {
   alert("Couldn't connect to your device's media");
 });
@@ -60,16 +42,17 @@ peer.on('open', function (id) {
   });
 });
 
+socket.on('disconnect-user', function (username) {
+  $('#video-grid > video').remove(`#${username}`);
+});
+
 const connectToNewUser = function (userPeerId, username, stream) {
-  console.log("CONNECT TO NEW USER", username);
   var conn = peer.connect(userPeerId);
   conn.on('open', function(){
     conn.send(USERNAME);
-    console.log("SENDING DATA: ", USERNAME);
     const call = peer.call(userPeerId, stream);
     const video = document.createElement('video');
     call.on('stream', function (userVideoStream) {
-      console.log("ADD VIDEO STREAM in connect");
       addVideoStream(video, userVideoStream, username);
     });
   });

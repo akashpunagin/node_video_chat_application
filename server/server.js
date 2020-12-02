@@ -72,7 +72,7 @@ io.on('connection', socket => {
     var user = users.removeUser(socket.id);
     if (user) {
       io.to(user.roomId).emit("update-participants-list", users.getUserList(user.roomId));
-      // TODO: remove video feed of dicsonnected user
+      io.to(user.roomId).emit("disconnect-user", user.name);
       io.to(user.roomId).emit("create-message", `${user.name} left the room`, undefined);
     }
   });

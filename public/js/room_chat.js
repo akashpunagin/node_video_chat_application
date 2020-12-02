@@ -13,13 +13,10 @@ socket.on('create-message', function (message, username) {
   var messageTemplate = $('#message-template').html();
 
   var card_bg_class;
-  if (USERNAME === username) {
-    card_bg_class = "bg-primary";
-  } else if (username == undefined) {
-    card_bg_class = "bg-secondary";
-  } else {
-    card_bg_class = "bg-dark";
-  }
+  if (USERNAME === username) card_bg_class = "bg-primary";
+  else if (username == undefined) card_bg_class = "bg-secondary";
+  else card_bg_class = "bg-dark";
+
 
   var html = Mustache.render(messageTemplate, {
     from: USERNAME === username ? 'You' : username,
