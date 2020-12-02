@@ -19,20 +19,33 @@ navigator.mediaDevices.getUserMedia({
     connectToNewUser(userPeerId, username, stream);
   });
 
-  var peerUsername;
+  // var peerUsername;
   peer.on('connection', function (conn) {
     conn.on('data', function (username) {
-      peerUsername = username;
+      // peerUsername = username;
+
+      peer.on('call', function (call) {
+        console.log("PEER CALL");
+        call.answer(stream);
+        const video = document.createElement('video');
+        call.on('stream', function (userVideoStream) {
+          console.log("ADD VIDEO STREAM in call");
+          addVideoStream(video, userVideoStream, username);
+        });
+      });
+
+
     });
   });
-  peer.on('call', function (call) {
-    console.log("PEER CALL", call);
-    call.answer(stream);
-    const video = document.createElement('video');
-    call.on('stream', function (userVideoStream) {
-      addVideoStream(video, userVideoStream, peerUsername);
-    });
-  });
+
+
+  // peer.on('call', function (call) {
+  //   call.answer(stream);
+  //   const video = document.createElement('video');
+  //   call.on('stream', function (userVideoStream) {
+  //     addVideoStream(video, userVideoStream, peerUsername);
+  //   });
+  // });
 
 }).catch(function (err) {
   alert("Couldn't connect to your device's media");
@@ -48,22 +61,30 @@ peer.on('open', function (id) {
 });
 
 const connectToNewUser = function (userPeerId, username, stream) {
+  console.log("CONNECT TO NEW USER", username);
   var conn = peer.connect(userPeerId);
   conn.on('open', function(){
     conn.send(USERNAME);
+    console.log("SENDING DATA: ", USERNAME);
     const call = peer.call(userPeerId, stream);
     const video = document.createElement('video');
     call.on('stream', function (userVideoStream) {
+      console.log("ADD VIDEO STREAM in connect");
       addVideoStream(video, userVideoStream, username);
     });
   });
 };
 
 const addVideoStream = function (video, stream, username) {
-  video.srcObject = stream;
-  video.addEventListener('loadedmetadata', function () {
-    video.play();
-  });
-  video.setAttribute("id", username);
-  videoGrid.append(video);
+  var videoIds = $('#video-grid video').map(function () {
+    return $(this).attr('id');
+  }).get();
+  if (!videoIds.includes(username)) {
+    video.srcObject = stream;
+    video.addEventListener('loadedmetadata', function () {
+      video.play();
+    });
+    video.setAttribute("id", username);
+    videoGrid.append(video);
+  }
 };
