@@ -4,6 +4,7 @@ var chatButton = $('#main__chat__button');
 var mainChatWindow = $('#main__chat__window');
 var mainVideoWindow = $('#main__video__window');
 var mainParticipantsWindow = $('#main__participants__window');
+var leaveMeetingButton = $('#confirmLeaveMeeting');
 
 // Initial Columns
 var mainVideoWindowInitialCols = "col-md-7";
@@ -107,3 +108,8 @@ function copyToClipboard() {
     roomTooltip.tooltip('dispose');
   });
 }
+
+// Leave meeting
+leaveMeetingButton.on('click', function () {
+  window.location.href = "/";
+});

@@ -79,7 +79,7 @@
           <div class="col-4 ml-auto">
             <div class="row justify-content-center">
               <div class="main__controls__button">
-                <span class="leave_meeting">Leave Meeting</span> <!-- TODO: implement leave meeting -->
+                <span id="leave_meeting" data-toggle="modal" data-target="#leaveMeetingModal">Leave Meeting</span> <!-- TODO: implement leave meeting -->
               </div>
             </div>
           </div>
@@ -115,6 +115,27 @@
               </div>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leave Meeting Modal -->
+  <div class="modal fade" id="leaveMeetingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Leave Meeting</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to leave the meeting?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="confirmLeaveMeeting">Yes</button>
         </div>
       </div>
     </div>
