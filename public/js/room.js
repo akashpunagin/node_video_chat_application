@@ -3,6 +3,7 @@ const socket = io();
 const videoGrid = $('#video-grid');
 const video = document.createElement('video');
 video.muted = true;
+var videoStreamCurrentUser;
 
 var peer = new Peer(undefined, {
   path: '/peerjs',
@@ -14,6 +15,7 @@ navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
 }).then(function (stream) {
+  videoStreamCurrentUser = stream;
   addVideoStream(video, stream, USERNAME);
   socket.on('user-connected', function (userPeerId, username) {
     connectToNewUser(userPeerId, username, stream);
