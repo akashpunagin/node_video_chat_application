@@ -73,3 +73,7 @@ const addVideoStream = function (video, stream, username) {
     videoGrid.append(video);
   }
 };
+
+$(window).on('beforeunload', function(){
+  socket.close();
+});
