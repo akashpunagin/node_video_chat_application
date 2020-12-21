@@ -37,7 +37,6 @@ navigator.mediaDevices.getUserMedia({
   });
 }).catch(function (err) {
   alert("Couldn't connect to your device's media");
-  alert(err);
 });
 
 peer.on('open', function (id) {
