@@ -11,6 +11,10 @@ var peer = new Peer(undefined, {
   port: PEER_PORT === "" ? '3000' : PEER_PORT
 });
 
+navigator.mediaDevices.getUserMedia = navigator.mediaDevices.getUserMedia ||
+  navigator.webkitGetUserMedia ||
+  navigator.mozGetUserMedia;
+
 navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
@@ -33,6 +37,7 @@ navigator.mediaDevices.getUserMedia({
   });
 }).catch(function (err) {
   alert("Couldn't connect to your device's media");
+  alert(err);
 });
 
 peer.on('open', function (id) {
